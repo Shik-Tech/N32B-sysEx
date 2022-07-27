@@ -7,6 +7,7 @@
 
 #include "definitions.h"
 
+USBMIDI_CREATE_INSTANCE(0, MIDICoreUSB);
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDICoreSerial);
 
 MUX_FACTORY muxFactory;
@@ -19,7 +20,6 @@ ezButton buttonB(BUTTON_B_PIN);
 byte currentPresetNumber = 0;
 Preset_t activePreset;
 
-// uint16_t bufferKnobValues[32][3];
 uint16_t knobValues[32][4] = {0};
 float EMA_a = 0.2;
 

@@ -46,21 +46,30 @@ void updateKnob(uint8_t index)
 
 void sendSysEx(const struct Knob_t &currentKnob, uint8_t MSBvalue, uint8_t LSBvalue)
 {
-  if (currentKnob.messageSize == 0) return;
+  if (currentKnob.messageSize == 0)
+    return;
 
   std::vector<byte> sysExMessageWithValues;
-  for (uint8_t i = 0; i < currentKnob.messageSize; i++)
+
+  for (uint8_t index = 0; index < currentKnob.messageSize + 2; index++)
   {
-    sysExMessageWithValues.push_back(currentKnob.sysExData[i]);
+    if (index == currentKnob.valuesIndex)
+    {
+      sysExMessageWithValues.push_back(currentKnob.MSBFirst ? MSBvalue : LSBvalue);
+      sysExMessageWithValues.push_back(currentKnob.MSBFirst ? LSBvalue : MSBvalue);
+    }
+    if (index != currentKnob.messageSize)
+    {
+      sysExMessageWithValues.push_back(currentKnob.sysExData[index]);
+    }
   }
-  sysExMessageWithValues.push_back(MSBvalue);
-  sysExMessageWithValues.push_back(LSBvalue);
 
   // for (uint8_t i = 0; i < sysExMessageWithValues.size(); i++)
   // {
   //   Serial.print(sysExMessageWithValues[i], HEX);
   //   Serial.print(" ");
   // }
+  // Serial.println("");
 
   byte *sysExMessage = &sysExMessageWithValues[0];
 
@@ -69,22 +78,22 @@ void sendSysEx(const struct Knob_t &currentKnob, uint8_t MSBvalue, uint8_t LSBva
 
 void changeChannel(bool direction)
 {
-  if (direction)
-  {
-    // Next Channel
-    if (activePreset.channel < 16)
-      activePreset.channel++;
-    else
-      activePreset.channel = 1;
-  }
-  else
-  {
-    // Previous Channel
-    if (activePreset.channel > 1)
-      activePreset.channel--;
-    else
-      activePreset.channel = 16;
-  }
+  // if (direction)
+  // {
+  //   // Next Channel
+  //   if (activePreset.channel < 16)
+  //     activePreset.channel++;
+  //   else
+  //     activePreset.channel = 1;
+  // }
+  // else
+  // {
+  //   // Previous Channel
+  //   if (activePreset.channel > 1)
+  //     activePreset.channel--;
+  //   else
+  //     activePreset.channel = 16;
+  // }
 }
 
 void changePreset(bool direction)
@@ -122,7 +131,7 @@ void buttonReleaseAction(bool direction)
     else
     {
       changeChannel(direction);
-      n32b_display.showChannelNumber(activePreset.channel);
+      // n32b_display.showChannelNumber(activePreset.channel);
     }
   }
 
@@ -171,7 +180,7 @@ void renderButtonFunctions()
     if (isPressingAButton)
     {
       isPresetMode = false;
-      n32b_display.showChannelNumber(activePreset.channel);
+      // n32b_display.showChannelNumber(activePreset.channel);
     }
     if (isPressingBButton)
     {
@@ -183,5 +192,6 @@ void renderButtonFunctions()
 
 void doMidiRead()
 {
+  MIDICoreUSB.read();
   MIDICoreSerial.read();
 }

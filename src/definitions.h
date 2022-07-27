@@ -24,6 +24,7 @@ USING_NAMESPACE_MIDI;
 
 const uint8_t firmwareVersion[] PROGMEM = {30, 0, 0};
 
+extern MidiInterface<USBMIDI_NAMESPACE::usbMidiTransport> MIDICoreUSB;
 extern MIDI_NAMESPACE::MidiInterface<MIDI_NAMESPACE::SerialMIDI<HardwareSerial>> MIDICoreSerial;
 extern MUX_FACTORY muxFactory;
 extern N32B_DISPLAY n32b_display;
@@ -90,14 +91,15 @@ enum DEFINITIONS
 struct Knob_t
 {
   uint8_t messageSize = 0;
-  byte sysExData[16] = {0};
-  // std::vector <byte> sysExData;
+  uint8_t valuesIndex = 0;
+  bool MSBFirst = true;
+  byte sysExData[10] = {0};
 };
 
 // A preset struct is defining the device preset structure
 struct Preset_t
 {
-  midi::Channel channel;
+  // midi::Channel channel;
   Knob_t knobInfo[32];
 };
 

@@ -34,9 +34,9 @@ void setup()
   buttonB.setDebounceTime(50);
 
   /*
-  * Factory Reset
-  * Hold button-A down while powering the device will reset the presets
-  */
+   * Factory Reset
+   * Hold button-A down while powering the device will reset the presets
+   */
   if (!digitalRead(BUTTON_A_PIN))
   {
     bool buttonPressed = true;
@@ -88,8 +88,10 @@ void setup()
   /* Set callbacks */
   MIDICoreSerial.setHandleMessage(onSerialMessage);
 
+  MIDICoreUSB.setHandleSystemExclusive(processSysex);
   // MIDICoreSerial.setHandleSystemExclusive(processSysex);
 
+  MIDICoreUSB.setHandleProgramChange(handleProgramChange);
   MIDICoreSerial.setHandleProgramChange(handleProgramChange);
 
   /* Initiate MIDI communications, listen to all channels */

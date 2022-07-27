@@ -14,28 +14,28 @@ void processSysex(unsigned char *data, unsigned int size)
         switch (data[COMMAND_INDEX])
         {
         case SET_KNOB_MODE:
-                // activePreset.knobInfo[data[KNOB_INDEX]].MSB = midi::encodeSysEx(&data[SYSEX_INDEX], activePreset.knobInfo[data[KNOB_INDEX]].sysExData, sizeof(data[SYSEX_INDEX]));
+            // activePreset.knobInfo[data[KNOB_INDEX]].MSB = midi::encodeSysEx(&data[SYSEX_INDEX], activePreset.knobInfo[data[KNOB_INDEX]].sysExData, sizeof(data[SYSEX_INDEX]));
 
-                /*
-                 * TODO: handle Korg special case:
-                 * https://github.com/FortySevenEffects/arduino_midi_library/blob/master/doc/sysex-codec.md
-                 */
-                // void handleSysEx(byte * inData, unsigned inSize)
-                // {
-                //     // SysEx body data starts at 3rd byte: F0 42 aa bb cc dd F7
-                //     // 42 being the hex value of the Korg SysEx ID.
-                //     const unsigned dataStartOffset = 2;
-                //     const unsigned encodedDataLength = inSize - 3; // Remove F0 42 & F7
+            /*
+             * TODO: handle Korg special case:
+             * https://github.com/FortySevenEffects/arduino_midi_library/blob/master/doc/sysex-codec.md
+             */
+            // void handleSysEx(byte * inData, unsigned inSize)
+            // {
+            //     // SysEx body data starts at 3rd byte: F0 42 aa bb cc dd F7
+            //     // 42 being the hex value of the Korg SysEx ID.
+            //     const unsigned dataStartOffset = 2;
+            //     const unsigned encodedDataLength = inSize - 3; // Remove F0 42 & F7
 
-                //     // Create a large enough buffer where to decode the message
-                //     byte decodedData[64];
+            //     // Create a large enough buffer where to decode the message
+            //     byte decodedData[64];
 
-                //     const unsigned decodedSize = decodeSysEx(inData + dataStartOffset,
-                //                                              decodedData,
-                //                                              encodedDataLength,
-                //                                              true); // flip header bits
-                //     // Do stuff with your message
-                // }
+            //     const unsigned decodedSize = decodeSysEx(inData + dataStartOffset,
+            //                                              decodedData,
+            //                                              encodedDataLength,
+            //                                              true); // flip header bits
+            //     // Do stuff with your message
+            // }
             break;
         case SAVE_PRESET:
             savePreset(data[KNOB_INDEX]);
@@ -64,10 +64,10 @@ void processSysex(unsigned char *data, unsigned int size)
 
 void handleChangeChannel(byte channel)
 {
-    if (channel < 17 && channel > 0)
-    {
-        activePreset.channel = channel;
-    }
+    // if (channel < 17 && channel > 0)
+    // {
+    //     activePreset.channel = channel;
+    // }
 }
 
 // Change preset on program change
@@ -88,7 +88,8 @@ void sendDeviceFirmwareVersion()
     {
         data[i + 1] = EEPROM.read(EEPROM.length() - i);
     }
-    // MIDICoreUSB.sendSysEx(5, data);
+
+    MIDICoreUSB.sendSysEx(5, data);
 }
 void sendActivePreset()
 {
