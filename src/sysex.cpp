@@ -14,7 +14,15 @@ void processSysex(unsigned char *data, unsigned int size)
         switch (data[COMMAND_INDEX])
         {
         case SET_KNOB_MODE:
-            // activePreset.knobInfo[data[KNOB_INDEX]].MSB = midi::encodeSysEx(&data[SYSEX_INDEX], activePreset.knobInfo[data[KNOB_INDEX]].sysExData, sizeof(data[SYSEX_INDEX]));
+            // byte testSysExEncoded[10];
+            // midi::encodeSysEx(&data[SYSEX_INDEX], testSysExEncoded, sizeof(data[SYSEX_INDEX]));
+            // for (uint8_t i = 0; i < 10; i++){
+            //     Serial.print(testSysExEncoded[i]);
+            //     Serial.print("");
+            // }
+
+
+            // midi::encodeSysEx(&data[SYSEX_INDEX], activePreset.knobInfo[data[KNOB_INDEX]].sysExData, sizeof(data[SYSEX_INDEX]));
 
             /*
              * TODO: handle Korg special case:

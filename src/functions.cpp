@@ -9,10 +9,10 @@
 
 void onSerialMessage(const midi::Message<128> &message)
 {
-  if (MIDICoreSerial.getType() != midi::MidiType::ActiveSensing)
-  {
-    n32b_display.blinkDot(2);
-  }
+  // if (MIDICoreSerial.getType() != midi::MidiType::ActiveSensing)
+  // {
+  //   n32b_display.blinkDot(2);
+  // }
 }
 
 void updateKnob(uint8_t index)
@@ -29,9 +29,13 @@ void updateKnob(uint8_t index)
       (knobValues[index][0] != knobValues[index][3]))
   {
     needToUpdate = true;
-    shiftedValue = map(knobValues[index][0], 0, 1019, 0, 16383);
-    MSBValue = shiftedValue >> 7;
-    LSBValue = lowByte(shiftedValue) >> 1;
+    shiftedValue = map(knobValues[index][0], 0, 1019, currentKnob.minValue, currentKnob.maxValue);
+
+    MSBValue = shiftedValue >> 4;
+    LSBValue = shiftedValue & 0x0F;
+
+    Serial.println(MSBValue);
+    Serial.println(LSBValue);
   }
 
   if (needToUpdate)
@@ -46,6 +50,37 @@ void updateKnob(uint8_t index)
 
 void sendSysEx(const struct Knob_t &currentKnob, uint8_t MSBvalue, uint8_t LSBvalue)
 {
+  // byte testSysExEncoded[10];
+  // byte testSysExDecoded[10];
+  // const byte lengthDecoded = midi::decodeSysEx(currentKnob.sysExData, testSysExDecoded, 10);
+  // const byte lengthEncoded = midi::encodeSysEx(testSysExDecoded, testSysExEncoded, lengthDecoded);
+
+  // Serial.println(lengthDecoded);
+  // Serial.println(lengthEncoded);
+
+  // for (uint8_t i = 0; i < 10; i++)
+  // {
+  //   Serial.print(currentKnob.sysExData[i], HEX);
+  //   Serial.print(" ");
+  // }
+  // Serial.println("");
+
+  // for (uint8_t i = 0; i < 10; i++)
+  // {
+  //   Serial.print(testSysExDecoded[i]);
+  //   Serial.print(" ");
+  // }
+  // Serial.println("");
+
+  // for (uint8_t i = 0; i < 10; i++)
+  // {
+  //   Serial.print(testSysExEncoded[i], HEX);
+  //   Serial.print(" ");
+  // }
+
+  // Serial.println("");
+  // Serial.println("-----------");
+
   if (currentKnob.messageSize == 0)
     return;
 
@@ -57,6 +92,7 @@ void sendSysEx(const struct Knob_t &currentKnob, uint8_t MSBvalue, uint8_t LSBva
     {
       sysExMessageWithValues.push_back(currentKnob.MSBFirst ? MSBvalue : LSBvalue);
       sysExMessageWithValues.push_back(currentKnob.MSBFirst ? LSBvalue : MSBvalue);
+      // sysExMessageWithValues.push_back(MSBvalue);
     }
     if (index != currentKnob.messageSize)
     {
@@ -74,6 +110,7 @@ void sendSysEx(const struct Knob_t &currentKnob, uint8_t MSBvalue, uint8_t LSBva
   byte *sysExMessage = &sysExMessageWithValues[0];
 
   MIDICoreSerial.sendSysEx(currentKnob.messageSize + 2, sysExMessage);
+  MIDICoreUSB.sendSysEx(currentKnob.messageSize + 2, sysExMessage);
 }
 
 void changeChannel(bool direction)

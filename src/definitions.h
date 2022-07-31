@@ -94,12 +94,13 @@ struct Knob_t
   uint8_t valuesIndex = 0;
   bool MSBFirst = true;
   byte sysExData[10] = {0};
+  uint8_t minValue = 0;
+  uint8_t maxValue = 255;
 };
 
 // A preset struct is defining the device preset structure
 struct Preset_t
 {
-  // midi::Channel channel;
   Knob_t knobInfo[32];
 };
 
