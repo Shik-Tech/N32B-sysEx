@@ -53,14 +53,15 @@ enum COMMANDS_INDEXS
 {
   MANUFACTURER_INDEX = 1,
   COMMAND_INDEX = 2,
-  KNOB_INDEX = 3, // Also used for other commands value
-  MSB_INDEX = 4,
-  LSB_INDEX = 5,
-  CHANNEL_INDEX = 6,
-  MODE_INDEX = 7,
-  INVERT_A_INDEX = 8,
-  INVERT_B_INDEX = 9,
-  SYSEX_INDEX = 10
+  KNOB_INDEX = 3,
+  MSBFIRST_INDEX = 4,
+  VALUES_INDEX = 5,
+  MIN_VALUE_INDEX = 6, // 6 MSB, 7 LSB
+  MAX_VALUE_INDEX = 8, // 8 MSB, 9 LSB
+  IS_SIGNED_INDEX = 10,
+  START_SYSEX_INDEX = 11,
+  SYSEX_LENGTH_INDEX = 12,
+  SYSEX_MESSAGE = 13,
 };
 
 enum COMMANDS
@@ -70,7 +71,8 @@ enum COMMANDS
   LOAD_PRESET = 3,           // Load a preset
   SEND_FIRMWARE_VERSION = 4, // Send the device firmware version
   SYNC_KNOBS = 5,            // Send active preset
-  CHANGE_CHANNEL = 6         // Changes the global MIDI channel
+  // CHANGE_CHANNEL = 6,        // Changes the global MIDI channel
+  START_SYSEX_MESSAGE = 7    // Indicates start of sysEx message to store
 };
 
 enum KNOB_MODES
@@ -96,6 +98,7 @@ struct Knob_t
   byte sysExData[10] = {0};
   uint8_t minValue = 0;
   uint8_t maxValue = 255;
+  bool isSigned = true;
 };
 
 // A preset struct is defining the device preset structure
@@ -107,8 +110,8 @@ struct Preset_t
 /* Device setup data */
 extern byte currentPresetNumber;
 extern Preset_t activePreset;
-extern uint16_t knobValues[32][4];
-extern float EMA_a; // EMA alpha
+extern uint8_t knobValues[32][4];
+// extern float EMA_a; // EMA alpha
 
 /* Buttons variables */
 extern const unsigned int reset_timeout; // Reset to factory preset timeout

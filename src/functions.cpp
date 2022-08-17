@@ -7,19 +7,26 @@
 
 #include "functions.h"
 
+void onUsbMessage(const midi::Message<128> &message)
+{
+  MIDICoreSerial.send(message);
+  // n32b_display.blinkDot(2);
+}
+
 void onSerialMessage(const midi::Message<128> &message)
 {
-  // if (MIDICoreSerial.getType() != midi::MidiType::ActiveSensing)
-  // {
-  //   n32b_display.blinkDot(2);
-  // }
+ if (MIDICoreSerial.getType() != midi::MidiType::ActiveSensing)
+  {
+    MIDICoreUSB.send(message.type, message.data1, message.data2, message.channel);
+    // n32b_display.blinkDot(2);
+  }
 }
 
 void updateKnob(uint8_t index)
 {
   Knob_t &currentKnob = activePreset.knobInfo[index];
-  bool needToUpdate = false;
-  uint16_t shiftedValue;
+  int8_t shiftedValue;
+  uint8_t outputShifted;
   uint8_t MSBValue;
   uint8_t LSBValue;
 
@@ -28,18 +35,18 @@ void updateKnob(uint8_t index)
       (knobValues[index][0] != knobValues[index][2]) &&
       (knobValues[index][0] != knobValues[index][3]))
   {
-    needToUpdate = true;
-    shiftedValue = map(knobValues[index][0], 0, 1019, currentKnob.minValue, currentKnob.maxValue);
+    if (currentKnob.isSigned)
+    {
+      shiftedValue = map(knobValues[index][0], 0, 255, -currentKnob.maxValue, currentKnob.maxValue);
+      outputShifted = shiftedValue < 0 ? abs(shiftedValue) | 128 : shiftedValue;
+    }
+    else
+    {
+      outputShifted = map(knobValues[index][0], 0, 255, currentKnob.minValue, currentKnob.maxValue);
+    }
+    MSBValue = outputShifted >> 4;
+    LSBValue = outputShifted & 0x0F;
 
-    MSBValue = shiftedValue >> 4;
-    LSBValue = shiftedValue & 0x0F;
-
-    Serial.println(MSBValue);
-    Serial.println(LSBValue);
-  }
-
-  if (needToUpdate)
-  {
     sendSysEx(currentKnob, MSBValue, LSBValue);
 
     knobValues[index][3] = knobValues[index][2];

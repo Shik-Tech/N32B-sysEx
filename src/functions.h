@@ -10,12 +10,14 @@
 
 #include <Arduino.h>
 #include <USB-MIDI.h>
+// #include <bitset>
 
 #include "definitions.h"
 #include "storage.h"
 
 USING_NAMESPACE_MIDI;
 
+void onUsbMessage(const midi::Message<128> &);
 void onSerialMessage(const midi::Message<128> &);
 
 void updateKnob(uint8_t);
@@ -30,5 +32,6 @@ void buttonPressAction(bool);
 void renderButtonFunctions();
 
 void doMidiRead();
+// typedef std::bitset<sizeof(int)> IntBits;
 
 #endif

@@ -29,7 +29,7 @@ void MUX_FACTORY::setSignalPin(const bool &muxIndex, const uint8_t &pin)
 void MUX_FACTORY::update(uint8_t &currentKnob)
 {
     setMultiplexer(currentKnob);
-    knobValues[currentKnob][0] = (EMA_a * read(currentKnob)) + ((1 - EMA_a) * knobValues[currentKnob][0]);
+    knobValues[currentKnob][0] = read(currentKnob) >> 2;
 }
 
 uint16_t MUX_FACTORY::read(uint8_t &currentKnob)

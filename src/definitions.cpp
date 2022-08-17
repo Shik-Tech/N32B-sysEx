@@ -20,8 +20,8 @@ ezButton buttonB(BUTTON_B_PIN);
 byte currentPresetNumber = 0;
 Preset_t activePreset;
 
-uint16_t knobValues[32][4] = {0};
-float EMA_a = 0.2;
+uint8_t knobValues[32][4] = {0};
+// float EMA_a = 1;
 
 /* Buttons variables */
 const unsigned int reset_timeout = 4000; // Reset to factory preset timeout

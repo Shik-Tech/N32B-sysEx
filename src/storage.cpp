@@ -35,26 +35,6 @@ void formatFactory()
     std::fill_n(defaultPreset.knobInfo[indexId].sysExData, 16, 0);
   }
 
-  // TEMP
-  // Manufacturer ID // Channel // Function no. // Group no. // Machine ID // Sub status (parameter 1-39)
-  defaultPreset.knobInfo[15].messageSize = 4;
-  defaultPreset.knobInfo[15].valuesIndex = 4;
-  defaultPreset.knobInfo[15].maxValue = 255;
-  defaultPreset.knobInfo[15].MSBFirst = false;
-  defaultPreset.knobInfo[15].sysExData[0] = 0x43; // ID (Manufacturer)
-  defaultPreset.knobInfo[15].sysExData[1] = 0x10; // Midi channel
-  defaultPreset.knobInfo[15].sysExData[2] = 0x15; // Parameter group
-  defaultPreset.knobInfo[15].sysExData[3] = 0x48; // Parameter (40H - 7H)
-
-  defaultPreset.knobInfo[12].messageSize = 4;
-  defaultPreset.knobInfo[12].valuesIndex = 4;
-  defaultPreset.knobInfo[12].maxValue = 55;
-  defaultPreset.knobInfo[12].MSBFirst = true;
-  defaultPreset.knobInfo[12].sysExData[0] = 0x43; // ID (Manufacturer)
-  defaultPreset.knobInfo[12].sysExData[1] = 0x10; // Midi channel
-  defaultPreset.knobInfo[12].sysExData[2] = 0x15; // Parameter group
-  defaultPreset.knobInfo[12].sysExData[3] = 0x4D; // Parameter (40H - 7H)
-
   // Write the default preset to all preset slots
   uint8_t baseAddress = 1;
   for (uint8_t p = 0; p < NUMBER_OF_PRESETS; p++)
