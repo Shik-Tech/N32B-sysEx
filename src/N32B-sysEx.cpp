@@ -117,6 +117,4 @@ void loop()
 
   renderButtonFunctions();
   n32b_display.clearDisplay();
-
-  // Serial.print(IntBits(1).test(0));
 }

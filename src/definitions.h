@@ -25,7 +25,7 @@ USING_NAMESPACE_MIDI;
 const uint8_t firmwareVersion[] PROGMEM = {30, 0, 0};
 
 extern MidiInterface<USBMIDI_NAMESPACE::usbMidiTransport> MIDICoreUSB;
-extern MIDI_NAMESPACE::MidiInterface<MIDI_NAMESPACE::SerialMIDI<HardwareSerial>> MIDICoreSerial;
+extern MidiInterface<MIDI_NAMESPACE::SerialMIDI<HardwareSerial>> MIDICoreSerial;
 extern MUX_FACTORY muxFactory;
 extern N32B_DISPLAY n32b_display;
 extern ezButton buttonA;
