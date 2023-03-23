@@ -52,5 +52,6 @@
         "utility": "cpp",
         "valarray": "cpp",
         "vector": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": false
 }

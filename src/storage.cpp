@@ -34,6 +34,7 @@ void formatFactory()
     uint8_t indexId = pgm_read_word_near(knobsLocation + i);
     std::fill_n(defaultPreset.knobInfo[indexId].sysExData, 16, 0);
   }
+  defaultPreset.thruMode = THRU_OFF;
 
   // Write the default preset to all preset slots
   uint8_t baseAddress = 1;

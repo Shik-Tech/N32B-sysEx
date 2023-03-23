@@ -22,7 +22,7 @@
 
 USING_NAMESPACE_MIDI;
 
-const uint8_t firmwareVersion[] PROGMEM = {30, 0, 0};
+const uint8_t firmwareVersion[] PROGMEM = {30, 0, 1};
 
 extern MidiInterface<USBMIDI_NAMESPACE::usbMidiTransport> MIDICoreUSB;
 extern MidiInterface<MIDI_NAMESPACE::SerialMIDI<HardwareSerial>> MIDICoreSerial;
@@ -72,7 +72,8 @@ enum COMMANDS
   SEND_FIRMWARE_VERSION = 4, // Send the device firmware version
   SYNC_KNOBS = 5,            // Send active preset
   // CHANGE_CHANNEL = 6,        // Changes the global MIDI channel
-  START_SYSEX_MESSAGE = 7    // Indicates start of sysEx message to store
+  START_SYSEX_MESSAGE = 7, // Indicates start of sysEx message to store
+  SET_THRU_MODE = 8        // Set the midi THRU behavior
 };
 
 enum KNOB_MODES
@@ -87,6 +88,14 @@ enum DEFINITIONS
   SHIK_MANUFACTURER_ID = 32,
   NUMBER_OF_KNOBS = 32,
   NUMBER_OF_PRESETS = 1 // TODO: Change to something else
+};
+
+enum THRU_MODES
+{
+  THRU_OFF = 0,
+  THRU_TRS = 1,
+  THRU_USB = 2,
+  THRU_BOTH = 3
 };
 
 // Knob settings structure
@@ -105,6 +114,7 @@ struct Knob_t
 struct Preset_t
 {
   Knob_t knobInfo[32];
+  uint8_t thruMode;
 };
 
 /* Device setup data */

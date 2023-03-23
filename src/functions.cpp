@@ -9,16 +9,23 @@
 
 void onUsbMessage(const midi::Message<128> &message)
 {
-  MIDICoreSerial.send(message);
-  // n32b_display.blinkDot(2);
+  if (activePreset.thruMode == THRU_TRS || activePreset.thruMode == THRU_BOTH)
+  {
+    MIDICoreSerial.send(message);
+    n32b_display.blinkDot(2);
+  }
 }
 
 void onSerialMessage(const midi::Message<128> &message)
 {
- if (MIDICoreSerial.getType() != midi::MidiType::ActiveSensing)
+
+  if (activePreset.thruMode == THRU_USB || activePreset.thruMode == THRU_BOTH)
   {
-    MIDICoreUSB.send(message.type, message.data1, message.data2, message.channel);
-    // n32b_display.blinkDot(2);
+    if (MIDICoreSerial.getType() != midi::MidiType::ActiveSensing)
+    {
+      MIDICoreUSB.send(message.type, message.data1, message.data2, message.channel);
+      n32b_display.blinkDot(2);
+    }
   }
 }
 
@@ -118,6 +125,8 @@ void sendSysEx(const struct Knob_t &currentKnob, uint8_t MSBvalue, uint8_t LSBva
 
   MIDICoreSerial.sendSysEx(currentKnob.messageSize + 2, sysExMessage);
   MIDICoreUSB.sendSysEx(currentKnob.messageSize + 2, sysExMessage);
+
+  n32b_display.blinkDot(1);
 }
 
 void changeChannel(bool direction)
@@ -179,7 +188,7 @@ void buttonReleaseAction(bool direction)
     }
   }
 
-  MIDICoreSerial.turnThruOn();
+  // MIDICoreSerial.turnThruOn();
 }
 
 void buttonPressAction(bool direction)

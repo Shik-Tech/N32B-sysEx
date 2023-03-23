@@ -59,6 +59,9 @@ void processSysex(unsigned char *data, unsigned int size)
             //     // Do stuff with your message
             // }
             break;
+        case SET_THRU_MODE:
+            setMidiThruMode(data[KNOB_INDEX]);
+            break;
         case SAVE_PRESET:
             savePreset(data[KNOB_INDEX]);
             break;
@@ -115,6 +118,7 @@ void sendDeviceFirmwareVersion()
 }
 void sendActivePreset()
 {
+    byte *sysExMessage;
     // Send current preset
     for (uint8_t i = 0; i < NUMBER_OF_KNOBS; i++)
     {
@@ -124,7 +128,7 @@ void sendActivePreset()
         uint8_t maxValueMSB = activePreset.knobInfo[indexId].maxValue >> 4;
         uint8_t maxValueLSB = activePreset.knobInfo[indexId].maxValue & 0x0F;
 
-        std::vector<uint8_t> presetData = {
+        std::vector<uint8_t> knobsData = {
             SHIK_MANUFACTURER_ID,
             SYNC_KNOBS,
             indexId,
@@ -139,10 +143,21 @@ void sendActivePreset()
 
         for (uint8_t byteIndex = 0; byteIndex < activePreset.knobInfo[indexId].messageSize; byteIndex++)
         {
-            presetData.push_back(activePreset.knobInfo[indexId].sysExData[byteIndex]);
+            knobsData.push_back(activePreset.knobInfo[indexId].sysExData[byteIndex]);
         }
 
-        byte *sysExMessage = &presetData[0];
-        MIDICoreUSB.sendSysEx(presetData.size(), sysExMessage);
+        sysExMessage = &knobsData[0];
+        MIDICoreUSB.sendSysEx(knobsData.size(), sysExMessage);
     }
+    std::vector<uint8_t> presetData = {
+        SHIK_MANUFACTURER_ID,
+        SET_THRU_MODE,
+        activePreset.thruMode};
+
+    sysExMessage = &presetData[0];
+    MIDICoreUSB.sendSysEx(presetData.size(), sysExMessage);
+}
+void setMidiThruMode(byte mode)
+{
+    activePreset.thruMode = mode;
 }
