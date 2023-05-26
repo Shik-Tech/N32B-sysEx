@@ -16,10 +16,11 @@
 #include "functions.h"
 
 void processSysex(unsigned char *, unsigned int);
-void handleChangeChannel(byte);
-void handleProgramChange(byte, byte);
+// void handleChangeChannel(byte);
+// void handleProgramChange(byte, byte);
 void sendDeviceFirmwareVersion();
 void sendActivePreset();
 void setMidiThruMode(byte);
+void setMidiOutputMode(byte);
 
 #endif

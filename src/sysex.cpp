@@ -18,16 +18,16 @@ void processSysex(unsigned char *data, unsigned int size)
             {
                 for (uint8_t i = 0; i < data[SYSEX_LENGTH_INDEX]; i++)
                 {
-                    activePreset.knobInfo[data[KNOB_INDEX]].sysExData[i] = data[SYSEX_MESSAGE + i];
+                    device.activePreset.knobInfo[data[KNOB_INDEX]].sysExData[i] = data[SYSEX_MESSAGE + i];
                 }
             }
 
-            activePreset.knobInfo[data[KNOB_INDEX]].valuesIndex = data[VALUES_INDEX];
-            activePreset.knobInfo[data[KNOB_INDEX]].MSBFirst = data[MSBFIRST_INDEX];
-            activePreset.knobInfo[data[KNOB_INDEX]].minValue = data[MIN_VALUE_INDEX] << 4 | data[MIN_VALUE_INDEX + 1];
-            activePreset.knobInfo[data[KNOB_INDEX]].maxValue = data[MAX_VALUE_INDEX] << 4 | data[MAX_VALUE_INDEX + 1];
-            activePreset.knobInfo[data[KNOB_INDEX]].isSigned = data[IS_SIGNED_INDEX];
-            activePreset.knobInfo[data[KNOB_INDEX]].messageSize = data[SYSEX_LENGTH_INDEX];
+            device.activePreset.knobInfo[data[KNOB_INDEX]].valuesIndex = data[VALUES_INDEX];
+            device.activePreset.knobInfo[data[KNOB_INDEX]].MSBFirst = data[MSBFIRST_INDEX];
+            device.activePreset.knobInfo[data[KNOB_INDEX]].minValue = data[MIN_VALUE_INDEX] << 4 | data[MIN_VALUE_INDEX + 1];
+            device.activePreset.knobInfo[data[KNOB_INDEX]].maxValue = data[MAX_VALUE_INDEX] << 4 | data[MAX_VALUE_INDEX + 1];
+            device.activePreset.knobInfo[data[KNOB_INDEX]].isSigned = data[IS_SIGNED_INDEX];
+            device.activePreset.knobInfo[data[KNOB_INDEX]].messageSize = data[SYSEX_LENGTH_INDEX];
 
             // byte testSysExEncoded[10];
             // midi::encodeSysEx(&data[SYSEX_INDEX], testSysExEncoded, sizeof(data[SYSEX_INDEX]));
@@ -61,6 +61,9 @@ void processSysex(unsigned char *data, unsigned int size)
             break;
         case SET_THRU_MODE:
             setMidiThruMode(data[KNOB_INDEX]);
+            break;
+        case SET_OUTPUT_MODE:
+            setMidiOutputMode(data[KNOB_INDEX]);
             break;
         case SAVE_PRESET:
             savePreset(data[KNOB_INDEX]);
@@ -123,27 +126,27 @@ void sendActivePreset()
     for (uint8_t i = 0; i < NUMBER_OF_KNOBS; i++)
     {
         uint8_t indexId = pgm_read_word_near(knobsLocation + i);
-        uint8_t minValueMSB = activePreset.knobInfo[indexId].minValue >> 4;
-        uint8_t minValueLSB = activePreset.knobInfo[indexId].minValue & 0x0F;
-        uint8_t maxValueMSB = activePreset.knobInfo[indexId].maxValue >> 4;
-        uint8_t maxValueLSB = activePreset.knobInfo[indexId].maxValue & 0x0F;
+        uint8_t minValueMSB = device.activePreset.knobInfo[indexId].minValue >> 4;
+        uint8_t minValueLSB = device.activePreset.knobInfo[indexId].minValue & 0x0F;
+        uint8_t maxValueMSB = device.activePreset.knobInfo[indexId].maxValue >> 4;
+        uint8_t maxValueLSB = device.activePreset.knobInfo[indexId].maxValue & 0x0F;
 
         std::vector<uint8_t> knobsData = {
             SHIK_MANUFACTURER_ID,
             SYNC_KNOBS,
             indexId,
-            activePreset.knobInfo[indexId].MSBFirst,
-            activePreset.knobInfo[indexId].valuesIndex,
+            device.activePreset.knobInfo[indexId].MSBFirst,
+            device.activePreset.knobInfo[indexId].valuesIndex,
             minValueMSB,
             minValueLSB,
             maxValueMSB,
             maxValueLSB,
-            activePreset.knobInfo[indexId].isSigned,
-            activePreset.knobInfo[indexId].messageSize};
+            device.activePreset.knobInfo[indexId].isSigned,
+            device.activePreset.knobInfo[indexId].messageSize};
 
-        for (uint8_t byteIndex = 0; byteIndex < activePreset.knobInfo[indexId].messageSize; byteIndex++)
+        for (uint8_t byteIndex = 0; byteIndex < device.activePreset.knobInfo[indexId].messageSize; byteIndex++)
         {
-            knobsData.push_back(activePreset.knobInfo[indexId].sysExData[byteIndex]);
+            knobsData.push_back(device.activePreset.knobInfo[indexId].sysExData[byteIndex]);
         }
 
         sysExMessage = &knobsData[0];
@@ -152,12 +155,16 @@ void sendActivePreset()
     std::vector<uint8_t> presetData = {
         SHIK_MANUFACTURER_ID,
         SET_THRU_MODE,
-        activePreset.thruMode};
+        device.activePreset.thruMode};
 
     sysExMessage = &presetData[0];
     MIDICoreUSB.sendSysEx(presetData.size(), sysExMessage);
 }
 void setMidiThruMode(byte mode)
 {
-    activePreset.thruMode = mode;
+    device.activePreset.thruMode = mode;
+}
+void setMidiOutputMode(byte mode)
+{
+    device.activePreset.outputMode = mode;
 }

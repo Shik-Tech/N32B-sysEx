@@ -30,8 +30,8 @@ void setup()
   pinMode(MUX_B_SIG, INPUT);
 
   // Set debounce time to 50 milliseconds
-  buttonA.setDebounceTime(50);
-  buttonB.setDebounceTime(50);
+  // buttonA.setDebounceTime(50);
+  // buttonB.setDebounceTime(50);
 
   /*
    * Factory Reset
@@ -92,8 +92,8 @@ void setup()
   MIDICoreUSB.setHandleSystemExclusive(processSysex);
   // MIDICoreSerial.setHandleSystemExclusive(processSysex);
 
-  MIDICoreUSB.setHandleProgramChange(handleProgramChange);
-  MIDICoreSerial.setHandleProgramChange(handleProgramChange);
+  // MIDICoreUSB.setHandleProgramChange(handleProgramChange);
+  // MIDICoreSerial.setHandleProgramChange(handleProgramChange);
 
   /* Initiate MIDI communications, listen to all channels */
   MIDICoreSerial.begin(MIDI_CHANNEL_OMNI);
@@ -113,6 +113,6 @@ void loop()
   }
   doMidiRead();
 
-  renderButtonFunctions();
+  // renderButtonFunctions();
   n32b_display.clearDisplay();
 }

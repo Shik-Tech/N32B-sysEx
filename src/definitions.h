@@ -22,14 +22,14 @@
 
 USING_NAMESPACE_MIDI;
 
-const uint8_t firmwareVersion[] PROGMEM = {30, 0, 1};
+const uint8_t firmwareVersion[] PROGMEM = {30, 0, 2};
 
 extern MidiInterface<USBMIDI_NAMESPACE::usbMidiTransport> MIDICoreUSB;
 extern MidiInterface<MIDI_NAMESPACE::SerialMIDI<HardwareSerial>> MIDICoreSerial;
 extern MUX_FACTORY muxFactory;
 extern N32B_DISPLAY n32b_display;
-extern ezButton buttonA;
-extern ezButton buttonB;
+// extern ezButton buttonA;
+// extern ezButton buttonB;
 
 /* Pin setup */
 enum PINS
@@ -73,7 +73,9 @@ enum COMMANDS
   SYNC_KNOBS = 5,            // Send active preset
   // CHANGE_CHANNEL = 6,        // Changes the global MIDI channel
   START_SYSEX_MESSAGE = 7, // Indicates start of sysEx message to store
-  SET_THRU_MODE = 8        // Set the midi THRU behavior
+  SET_THRU_MODE = 8,       // Set the midi THRU behavior
+  SET_OUTPUT_MODE = 9,     // Set the midi OUTPUT behavior
+  END_OF_TRANSMISSION = 99 // Notify end of transmission
 };
 
 enum KNOB_MODES
@@ -93,9 +95,18 @@ enum DEFINITIONS
 enum THRU_MODES
 {
   THRU_OFF = 0,
-  THRU_TRS = 1,
-  THRU_USB = 2,
-  THRU_BOTH = 3
+  THRU_TRS_TRS = 1,
+  THRU_TRS_USB = 2,
+  THRU_USB_USB = 3,
+  THRU_USB_TRS = 4,
+  THRU_BOTH_DIRECTIONS = 5
+};
+
+enum OUTPUT_MODES
+{
+  OUTPUT_TRS = 0,
+  OUTPUT_USB = 1,
+  OUTPUT_BOTH = 2
 };
 
 // Knob settings structure
@@ -115,23 +126,32 @@ struct Preset_t
 {
   Knob_t knobInfo[32];
   uint8_t thruMode;
+  uint8_t outputMode;
+};
+
+// A device struct is defining the device structure
+struct Device_t
+{
+  Preset_t activePreset;
+  uint8_t knobValues[32][4]{0};
 };
 
 /* Device setup data */
-extern byte currentPresetNumber;
-extern Preset_t activePreset;
-extern uint8_t knobValues[32][4];
+extern Device_t device;
+// extern byte currentPresetNumber;
+// extern Preset_t activePreset;
+// extern uint8_t knobValues[32][4];
 // extern float EMA_a; // EMA alpha
 
 /* Buttons variables */
 extern const unsigned int reset_timeout; // Reset to factory preset timeout
-extern const uint8_t SHORT_PRESS_TIME;   // Milliseconds
-extern unsigned long pressedTime;
-extern bool isPressingAButton;
-extern bool isPressingBButton;
+// extern const uint8_t SHORT_PRESS_TIME;   // Milliseconds
+// extern unsigned long pressedTime;
+// extern bool isPressingAButton;
+// extern bool isPressingBButton;
 
 /* Mode variables */
-extern bool isPresetMode;
+// extern bool isPresetMode;
 
 // byte index in EEPROM for the last used preset
 extern uint8_t lastUsedPresetAddress;

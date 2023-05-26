@@ -34,7 +34,8 @@ void formatFactory()
     uint8_t indexId = pgm_read_word_near(knobsLocation + i);
     std::fill_n(defaultPreset.knobInfo[indexId].sysExData, 16, 0);
   }
-  defaultPreset.thruMode = THRU_OFF;
+  defaultPreset.thruMode = THRU_TRS_TRS;
+  defaultPreset.outputMode = OUTPUT_BOTH;
 
   // Write the default preset to all preset slots
   uint8_t baseAddress = 1;
@@ -63,11 +64,11 @@ void loadPreset(uint8_t presetNumber)
     // Read the active preset from EEPROM
     for (uint16_t byteIndex = 0; byteIndex < sizeof(Preset_t); byteIndex++)
     {
-      ((uint8_t *)(&activePreset))[byteIndex] = EEPROM.read(baseAddress + byteIndex);
+      ((uint8_t *)(&device.activePreset))[byteIndex] = EEPROM.read(baseAddress + byteIndex);
     }
 
     // Update the last used preset
-    currentPresetNumber = presetNumber;
+    // currentPresetNumber = presetNumber;
     n32b_display.showPresetNumber(presetNumber);
 
     // Save current preset as the active preset.
@@ -85,7 +86,7 @@ void savePreset(uint8_t presetNumber)
     // write the active preset to EEPROM
     for (uint16_t byteIndex = 0; byteIndex < sizeof(Preset_t); byteIndex++)
     {
-      EEPROM.update(baseAddress + byteIndex, ((uint8_t *)(&activePreset))[byteIndex]);
+      EEPROM.update(baseAddress + byteIndex, ((uint8_t *)(&device.activePreset))[byteIndex]);
     }
 
     n32b_display.showSaveMessage();
