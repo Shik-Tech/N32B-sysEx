@@ -22,7 +22,7 @@
 
 USING_NAMESPACE_MIDI;
 
-const uint8_t firmwareVersion[] PROGMEM = {30, 0, 2};
+const uint8_t firmwareVersion[] PROGMEM = {30, 1, 0};
 
 extern MidiInterface<USBMIDI_NAMESPACE::usbMidiTransport> MIDICoreUSB;
 extern MidiInterface<MIDI_NAMESPACE::SerialMIDI<HardwareSerial>> MIDICoreSerial;
@@ -115,7 +115,7 @@ struct Knob_t
   uint8_t messageSize = 0;
   uint8_t valuesIndex = 0;
   bool MSBFirst = true;
-  byte sysExData[10] = {0};
+  byte sysExData[12] = {0};
   uint8_t minValue = 0;
   uint8_t maxValue = 255;
   bool isSigned = true;
