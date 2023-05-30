@@ -134,13 +134,6 @@ void sendSysEx(const struct Knob_t &currentKnob, uint8_t MSBvalue, uint8_t LSBva
     }
   }
 
-  // for (uint8_t i = 0; i < sysExMessageWithValues.size(); i++)
-  // {
-  //   Serial.print(sysExMessageWithValues[i], HEX);
-  //   Serial.print(" ");
-  // }
-  // Serial.println("");
-
   byte *sysExMessage = &sysExMessageWithValues[0];
 
   if (device.activePreset.outputMode == OUTPUT_TRS ||
@@ -156,54 +149,6 @@ void sendSysEx(const struct Knob_t &currentKnob, uint8_t MSBvalue, uint8_t LSBva
 
   n32b_display.blinkDot(1);
 }
-
-// void changePreset(bool direction)
-// {
-//   if (direction)
-//   {
-//     // Next Preset
-//     if (currentPresetNumber < NUMBER_OF_PRESETS - 1)
-//       loadPreset(currentPresetNumber + 1);
-//     else
-//       loadPreset(0);
-//   }
-//   else
-//   {
-//     // Previous Preset
-//     if (currentPresetNumber > 0)
-//       loadPreset(currentPresetNumber - 1);
-//     else
-//       loadPreset(NUMBER_OF_PRESETS - 1);
-//   }
-//   // MIDICoreSerial.sendProgramChange(currentPresetNumber, 1);
-// }
-
-// void buttonReleaseAction(bool direction)
-// {
-//   direction ? isPressingAButton = false : isPressingBButton = false;
-
-//   if (millis() - pressedTime < SHORT_PRESS_TIME)
-//   {
-//     if (isPresetMode)
-//     {
-//       changePreset(direction);
-//       n32b_display.showPresetNumber(currentPresetNumber);
-//     }
-//     else
-//     {
-//       // changeChannel(direction);
-//       // n32b_display.showChannelNumber(activePreset.channel);
-//     }
-//   }
-
-//   // MIDICoreSerial.turnThruOn();
-// }
-
-// void buttonPressAction(bool direction)
-// {
-//   pressedTime = millis();
-//   MIDICoreSerial.turnThruOff();
-// }
 
 void doMidiRead()
 {
