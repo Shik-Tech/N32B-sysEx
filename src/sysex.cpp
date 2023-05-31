@@ -152,13 +152,26 @@ void sendActivePreset()
         sysExMessage = &knobsData[0];
         MIDICoreUSB.sendSysEx(knobsData.size(), sysExMessage);
     }
-    std::vector<uint8_t> presetData = {
+
+    uint8_t presetThruData[3] = {
         SHIK_MANUFACTURER_ID,
         SET_THRU_MODE,
         device.activePreset.thruMode};
 
-    sysExMessage = &presetData[0];
-    MIDICoreUSB.sendSysEx(presetData.size(), sysExMessage);
+    MIDICoreUSB.sendSysEx(3, presetThruData);
+
+    uint8_t presetOutputData[3] = {
+        SHIK_MANUFACTURER_ID,
+        SET_OUTPUT_MODE,
+        device.activePreset.outputMode};
+
+    MIDICoreUSB.sendSysEx(3, presetOutputData);
+
+    uint8_t endOfTransmissionData[2] = {
+        SHIK_MANUFACTURER_ID,
+        END_OF_TRANSMISSION};
+
+    MIDICoreUSB.sendSysEx(2, endOfTransmissionData);
 }
 void setMidiThruMode(byte mode)
 {
